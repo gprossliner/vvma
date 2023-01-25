@@ -18,6 +18,8 @@ namespace vvma {
 
         Client client { get; set; }
 
+        Config Config { get; set; }
+
         public FrmMain() {
             InitializeComponent();
         }
@@ -34,8 +36,8 @@ namespace vvma {
 
             lstInputs.SelectedIndex = 0;
 
-            var config = Config.Open("config.yaml");
-            lstTestMessages.Items.AddRange(config.TestCommands.ToArray());
+            this.Config = Config.Open("config.yaml");
+            lstTestMessages.Items.AddRange(this.Config.TestCommands.ToArray());
         }
 
         private void cmdOpen_Click(object sender, EventArgs e) {
@@ -110,6 +112,10 @@ namespace vvma {
             });
             acceptThread.IsBackground = true;
             acceptThread.Start();
+        }
+
+        private void cmdRealApp_Click(object sender, EventArgs e) {
+            this.Close();
         }
     }
 }

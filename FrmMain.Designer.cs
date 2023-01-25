@@ -35,8 +35,8 @@
             this.cmdOpenClient = new System.Windows.Forms.Button();
             this.txtAddress = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.lstServerLog = new System.Windows.Forms.ListBox();
             this.cmdStartTestServer = new System.Windows.Forms.Button();
+            this.lstServerLog = new System.Windows.Forms.ListBox();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -173,6 +173,16 @@
             this.tabPage3.Text = "Test-Server";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
+            // cmdStartTestServer
+            // 
+            this.cmdStartTestServer.Location = new System.Drawing.Point(9, 7);
+            this.cmdStartTestServer.Name = "cmdStartTestServer";
+            this.cmdStartTestServer.Size = new System.Drawing.Size(75, 23);
+            this.cmdStartTestServer.TabIndex = 5;
+            this.cmdStartTestServer.Text = "Start";
+            this.cmdStartTestServer.UseVisualStyleBackColor = true;
+            this.cmdStartTestServer.Click += new System.EventHandler(this.cmdStartTestServer_Click);
+            // 
             // lstServerLog
             // 
             this.lstServerLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -183,16 +193,6 @@
             this.lstServerLog.Name = "lstServerLog";
             this.lstServerLog.Size = new System.Drawing.Size(773, 316);
             this.lstServerLog.TabIndex = 4;
-            // 
-            // cmdStartTestServer
-            // 
-            this.cmdStartTestServer.Location = new System.Drawing.Point(9, 7);
-            this.cmdStartTestServer.Name = "cmdStartTestServer";
-            this.cmdStartTestServer.Size = new System.Drawing.Size(75, 23);
-            this.cmdStartTestServer.TabIndex = 5;
-            this.cmdStartTestServer.Text = "Start";
-            this.cmdStartTestServer.UseVisualStyleBackColor = true;
-            this.cmdStartTestServer.Click += new System.EventHandler(this.cmdStartTestServer_Click);
             // 
             // FrmMain
             // 

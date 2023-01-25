@@ -54,5 +54,10 @@ namespace vvma {
             stop = true;
             readerThread.Join();
         }
+
+        public void PlayFile(int index) {
+            var cmd = $"c31c40abe{index.ToString("00")}a4a8c2e3";
+            Send(cmd);
+        }
     }
 }

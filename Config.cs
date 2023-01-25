@@ -12,7 +12,19 @@ namespace vvma {
 
         public TestCommand[] TestCommands { get; set; } = new TestCommand[0];
 
-        public static Config Open(string file) {
+        public int StartNote { get; set; }
+
+        public int EndNote { get; set; }
+
+        public string MidiInPort { get; set; }
+
+        public int MidiChannel { get; set; }
+
+        public string ServerAddress { get; set; } = "192.168.4.1";
+
+        public int ServerPort { get; set; } = 5233;
+
+        public static Config Open(string file) {    
             var content = File.ReadAllText(file);
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(PascalCaseNamingConvention.Instance)

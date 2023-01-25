@@ -1,7 +1,7 @@
-﻿Address: 127.0.0.1:5233
-# Address: 192.168.4.1:5233
-MidiInPort: IAC Driver Bus 1
+﻿MidiInPort: IAC Driver Bus 1
 MidiInChannel: 9
+StartNote: 60 #C4
+EndNote: 67 # 7 videos	
 
 TestCommands:
 - Name: PlayNr1
