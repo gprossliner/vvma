@@ -1,0 +1,42 @@
+﻿Address: 127.0.0.1:5233
+# Address: 192.168.4.1:5233
+MidiInPort: IAC Driver Bus 1
+MidiInChannel: 9
+
+TestCommands:
+- Name: PlayNr1
+  Value: c31c40abe01a4a8c2e3
+- Name: PlayNr2
+  Value: c31c40abe02a4a8c2e3
+- Name: PlayNr3
+  Value: c31c40abe03a4a8c2e3
+- Name: PlayNr4
+  Value: c31c40abe04a4a8c2e3
+- Name: PlayNr5
+  Value: c31c40abe05a4a8c2e3
+- Name: PlayNr6
+  Value: c31c40abe06a4a8c2e3
+- Name: PlayNr7
+  Value: c31c40abe07a4a8c2e3
+
+- Name: PlayNext
+  Value: c31c32abca4a8c2e3
+
+- Name: Pause
+  Value: c31c34abca4a8c2e3
+
+- Name: PowerOff
+  Value: c31c94abca4a8c2e3
+
+- Name: PowerOn
+  Value: c31c95abca4a8c2e3
+
+- Name: ModeLoop
+  Value: c31c37abca4a8c2e3
+- Name: ModeSingle
+  Value: c31c36abca4a8c2e3
+
+
+
+- Name: FileList
+  Value: c31c38abca4a8c2e3
