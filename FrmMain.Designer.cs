@@ -23,6 +23,7 @@
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
+            this.components = new System.ComponentModel.Container();
             this.lstInputs = new System.Windows.Forms.ComboBox();
             this.cmdOpenMidi = new System.Windows.Forms.Button();
             this.lstMidiMessages = new System.Windows.Forms.ListBox();
@@ -35,8 +36,8 @@
             this.cmdOpenClient = new System.Windows.Forms.Button();
             this.txtAddress = new System.Windows.Forms.TextBox();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.cmdStartTestServer = new System.Windows.Forms.Button();
-            this.lstServerLog = new System.Windows.Forms.ListBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.button1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -51,6 +52,7 @@
             this.lstInputs.Name = "lstInputs";
             this.lstInputs.Size = new System.Drawing.Size(211, 21);
             this.lstInputs.TabIndex = 0;
+            this.lstInputs.SelectedIndexChanged += new System.EventHandler(this.lstInputs_SelectedIndexChanged);
             // 
             // cmdOpenMidi
             // 
@@ -163,8 +165,7 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.cmdStartTestServer);
-            this.tabPage3.Controls.Add(this.lstServerLog);
+            this.tabPage3.Controls.Add(this.button1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
@@ -173,26 +174,19 @@
             this.tabPage3.Text = "Test-Server";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // cmdStartTestServer
+            // timer1
             // 
-            this.cmdStartTestServer.Location = new System.Drawing.Point(9, 7);
-            this.cmdStartTestServer.Name = "cmdStartTestServer";
-            this.cmdStartTestServer.Size = new System.Drawing.Size(75, 23);
-            this.cmdStartTestServer.TabIndex = 5;
-            this.cmdStartTestServer.Text = "Start";
-            this.cmdStartTestServer.UseVisualStyleBackColor = true;
-            this.cmdStartTestServer.Click += new System.EventHandler(this.cmdStartTestServer_Click);
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // lstServerLog
+            // button1
             // 
-            this.lstServerLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstServerLog.FormattingEnabled = true;
-            this.lstServerLog.Location = new System.Drawing.Point(6, 39);
-            this.lstServerLog.Name = "lstServerLog";
-            this.lstServerLog.Size = new System.Drawing.Size(773, 316);
-            this.lstServerLog.TabIndex = 4;
+            this.button1.Location = new System.Drawing.Point(9, 16);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 0;
+            this.button1.Text = "Open";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // FrmMain
             // 
@@ -226,8 +220,8 @@
         private System.Windows.Forms.ComboBox lstTestMessages;
         private System.Windows.Forms.Button cmdSend;
         private System.Windows.Forms.TabPage tabPage3;
-        private System.Windows.Forms.Button cmdStartTestServer;
-        private System.Windows.Forms.ListBox lstServerLog;
+        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Button button1;
     }
 }
 

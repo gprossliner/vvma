@@ -1,7 +1,7 @@
-﻿MidiInPort: IAC Driver Bus 1
-MidiInChannel: 9
-StartNote: 60 #C4
-EndNote: 67 # 7 videos	
+﻿MidiInPort: vvma
+MidiInChannel: 2
+StartNote: 0 #C4
+EndNote: 10 # 7 videos	
 
 TestCommands:
 - Name: PlayNr1

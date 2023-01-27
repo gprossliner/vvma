@@ -25,7 +25,7 @@ namespace vvma {
         }
 
         private void FrmMain_Load(object sender, EventArgs e) {
-            var devices = InputDevice.GetAll().ToArray();
+            var devices = InputDevice.GetAll().Select(d=>d.Name).ToArray();
 
             if (devices.Length == 0) {
                 lstInputs.Items.Add("No MIDI Input device found!");
@@ -41,7 +41,8 @@ namespace vvma {
         }
 
         private void cmdOpen_Click(object sender, EventArgs e) {
-            var device = (InputDevice)lstInputs.SelectedItem;
+            var deviceName = lstInputs.SelectedItem.ToString();
+            var device = InputDevice.GetByName(deviceName);
 
             device.EventReceived += this.Device_EventReceived;
             device.StartEventsListening();
@@ -68,10 +69,10 @@ namespace vvma {
 
 
         private void cmdOpenClient_Click(object sender, EventArgs e) {
-            this.client = new Client(txtAddress.Text, 2233);
+            this.client = new Client(txtAddress.Text, 5233);
             client.MessageReceived += this.Client_MessageReceived;
             client.MessageSend += this.Client_MessageSend;
-            client.StartListen();
+            client.Start();
             lstClientMessages.AddLogItem("Connection estabished");
         }
 
@@ -87,35 +88,22 @@ namespace vvma {
             this.client.Send(cmd.Value);
         }
 
-        private void cmdStartTestServer_Click(object sender, EventArgs e) {
-            var listener = new TcpListener(2233);
-            listener.Start();
-            lstServerLog.AddLogItem("Listening...");
-
-            var acceptThread = new Thread(()=> {
-                var client = listener.AcceptTcpClient();
-                lstServerLog.AddLogItem("Client accepted");
-
-                var stream = client.GetStream();
-                for(; ; ) {
-                    var msg = stream.ReadMessage();
-                    lstServerLog.AddLogItem("< " + msg);
-
-                    if (msg == "c31c38abca4a8c2e3") {
-                        var resp = "c30c38alc280101 - Countdown5_circus.bin170202 - August.bin300303 - PromisedEnd - Black.bin170404 - Lilith.bin160505 - Idont.bin180606 - RealBoy.bin240707 - Puppenspieler.bin05ME11a4a8c2e3";
-                        var respData = Encoding.ASCII.GetBytes(resp);
-                        stream.Write(respData, 0, respData.Length);
-                        lstServerLog.AddLogItem("> " + resp);
-                    }
-                }
-
-            });
-            acceptThread.IsBackground = true;
-            acceptThread.Start();
-        }
+   
 
         private void cmdRealApp_Click(object sender, EventArgs e) {
             this.Close();
+        }
+
+        private void timer1_Tick(object sender, EventArgs e) {
+
+        }
+
+        private void lstInputs_SelectedIndexChanged(object sender, EventArgs e) {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e) {
+            new FrmTestServer().Show();
         }
     }
 }

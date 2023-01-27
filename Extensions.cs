@@ -9,10 +9,10 @@ using System.Windows.Forms;
 namespace vvma {
     static class Extensions {
 
-        public static string ReadMessage(this NetworkStream stream, int timeout = 10, int bufferSize = 1024) {
+        public static string ReadMessage(this NetworkStream stream, ref bool stop, int timeout = 10, int bufferSize = 1024) {
 
             stream.ReadTimeout = timeout;
-            while (true) {
+            while (!stop) {
                 var buffer = new byte[bufferSize];
 
                 try {   
@@ -25,6 +25,7 @@ namespace vvma {
 
             }
 
+            return "";
         }
 
         public static void AddLogItem(this ListBox c, object item) {
