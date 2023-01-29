@@ -44,3 +44,10 @@ jobs:
         path: bin/Debug
       
   
+    - name: Upload test-server
+      uses: actions/upload-artifact@v3.1.2
+      with:
+        # Artifact name
+        name: test-server
+        # A file, directory or wildcard pattern that describes what to upload
+        path: vvma-testserver/bin/Debug

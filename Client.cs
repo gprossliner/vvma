@@ -7,7 +7,7 @@ using System.Text;
 namespace vvma {
     class Client {
 
-        TcpClient tcpClient = new TcpClient();
+        TcpClient tcpClient;
         StreamHandler handler;
        
         string address;
@@ -35,6 +35,7 @@ namespace vvma {
         public void Start() {
 
             OnLog("Try connect to server");
+            tcpClient = new TcpClient();
             tcpClient.BeginConnect(address, port, ar => {
                 try {
                     tcpClient.EndConnect(ar);
