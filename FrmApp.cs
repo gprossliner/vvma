@@ -72,6 +72,7 @@ namespace vvma {
         }
 
         private void Client_ConnectionEstablished(object sender, EventArgs e) {
+            this.Client.ModeLoop();
             this.Client.UpdateStatus();
         }
 
@@ -92,9 +93,9 @@ namespace vvma {
             PlayFile(e);
         }
 
-        private void PlayFile(int e) {
-            if (this.Client.Connected) {
-                this.Client.PlayFile(e);
+        private void PlayFile(int index) {
+            if (this.Client.Connected && index <= this.Client.Files.Count()) {
+                this.Client.PlayFile(index);
                 this.Client.UpdateStatus();
             }
         }

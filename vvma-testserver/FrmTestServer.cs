@@ -22,7 +22,7 @@ namespace vvma_testserver {
         public int CurrentFile { get; private set; } = 1;
         
         private void FrmTestServer_Load(object sender, EventArgs e) {
-            listener = new TcpListener(5233);
+            listener = new TcpListener(System.Net.IPAddress.Any, 5233);
             listener.Start();
             lstServerLog.AddLogItem("Listening...");
 

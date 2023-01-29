@@ -30,7 +30,7 @@ namespace vvma {
 
         public int ActiveFile { get; private set; }
 
-        public List<string> Files { get; private set; }
+        public IEnumerable<string> Files { get; private set; }
 
         public void Start() {
 
@@ -84,6 +84,9 @@ namespace vvma {
             OnLog("> " + msg);
         }
 
+        public void ModeLoop() {
+            Send("c31c37abca4a8c2e3");
+        }
 
         public void PlayFile(int index) {
             var cmd = $"c31c40abe{index.ToString("00")}{END}";
