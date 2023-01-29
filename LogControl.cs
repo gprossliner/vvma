@@ -21,14 +21,14 @@ namespace vvma {
 
         public void AddLog(object item) {
             var c = listBox;
-            c.Invoke(((Action)(() => {
+            c.Invoke(() => {
                 c.Items.Insert(0, item);
                 // c.SelectedIndex = c.Items.Count - 1;
 
                 while (c.Items.Count > MaxItems) {
                     c.Items.RemoveAt(c.Items.Count - 1);
                 }
-            })));
+            });
         }
     }
 }

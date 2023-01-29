@@ -10,11 +10,14 @@ namespace vvma {
     static class Extensions {
 
         public static void AddLogItem(this ListBox c, object item) {
-            c.Invoke(((Action)(() => {
+            c.Invoke(() => {
                 c.Items.Add(item);
                 c.SelectedIndex = c.Items.Count - 1;
-            })));
+            });
         }
 
+        public static void Invoke(this Control ctl, Action action) {
+            ctl.Invoke(action);
+        }
     }
 }

@@ -76,7 +76,7 @@ namespace vvma {
         }
 
         private void Client_ConnectionClosed(object sender, EventArgs e) {
-            this.Invoke(((Action)(() => {
+            this.Invoke(() => {
                 foreach(var btn in buttons) {
                     panFiles.Controls.Remove(btn);
                     btn.Click -= BtnFile_Click;
@@ -84,7 +84,7 @@ namespace vvma {
 
                 lblLoading.Visible = true;
                 filesLoaded = false;
-            })));
+            });
         }
 
 
@@ -104,7 +104,7 @@ namespace vvma {
         }
 
         private void VClient_StatusUpdated(object sender, EventArgs e) {
-            this.Invoke(((Action)(() => {
+            this.Invoke(() => {
 
                 if (!filesLoaded) {
                     BuildFileList();
@@ -119,7 +119,7 @@ namespace vvma {
                     }
                 }
 
-            })));
+            });
         }
 
         void BuildFileList() {
@@ -174,9 +174,9 @@ namespace vvma {
 
         private void VClient_Log(object sender, string e) {
 
-            this.Invoke(((Action)(() => {
+            this.Invoke(() => {
                 lstConnectionLog.AddLog(e);
-            })));
+            });
 
         }
         
