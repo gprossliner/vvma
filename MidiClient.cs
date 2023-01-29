@@ -12,6 +12,7 @@ namespace vvma {
         string portName;
         int channel;
         int startNote;
+        int lastPlayedIndex;
 
         InputDevice inputDevice;
 
@@ -56,6 +57,10 @@ namespace vvma {
             return noteNumber >= startNote && noteNumber < startNote + FilesCount - 1;
         }
 
+        int NoteToIndex(int noteNumber) {
+            return noteNumber - startNote + 2;
+        }
+
         private void InputDevice_EventReceived(object sender, MidiEventReceivedEventArgs e) {
             switch (e.Event.EventType) {
                 case MidiEventType.NoteOn: {
@@ -67,7 +72,8 @@ namespace vvma {
                         OnLog(n.ToString());
 
                         if (IsInRange(n.NoteNumber)) {
-                            var index = n.NoteNumber - startNote + 2;
+                            var index = NoteToIndex(n.NoteNumber);
+                            lastPlayedIndex = index;
                             OnPlayFile(index);
                         }
                     }
@@ -83,7 +89,9 @@ namespace vvma {
                         OnLog(n.ToString());
 
                         if (IsInRange(n.NoteNumber)) {
-                            OnPlayFile(1);
+                            if (NoteToIndex(n.NoteNumber) == lastPlayedIndex) {
+                                OnPlayFile(1);
+                            }
                         }
                     }
 
