@@ -57,7 +57,7 @@ namespace vvma {
         void InitMidi() {
             lstMidiLog.AddLog($"Open MIDI Port '{Config.MidiInPort}'");
 
-            this.MidiClient = new MidiClient(Config.MidiInPort, 0, 0, 10);
+            this.MidiClient = new MidiClient(Config.MidiInPort, Config.MidiChannel, Config.StartNote, Config.EndNote);
             this.MidiClient.Log += this.MidiClient_Log;
             this.MidiClient.PlayFile += this.MidiClient_PlayFile;
             this.MidiClient.Start();
@@ -138,6 +138,7 @@ namespace vvma {
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 btn.Text = files[i];
                 btn.TextAlign = ContentAlignment.MiddleLeft;
+                btn.FlatStyle = btnStyleNotActive.FlatStyle;
                 btn.Tag = i + 1;
                 btn.Click += this.BtnFile_Click;
 

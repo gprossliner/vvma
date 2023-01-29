@@ -1,7 +1,7 @@
-﻿MidiInPort: vvma
-MidiInChannel: 2
-StartNote: 0 #C4
-EndNote: 10 # 7 videos	
+﻿MidiInPort: CASIO USB-MIDI
+MidiInChannel: 0
+StartNote: 24
+EndNote: 34 # 10 videos	
 Server: 127.0.0.1
 
 TestCommands:

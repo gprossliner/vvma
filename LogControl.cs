@@ -16,6 +16,7 @@ namespace vvma {
             listBox = new ListBox();
             listBox.Dock = DockStyle.Fill;
             listBox.IntegralHeight = false;
+            listBox.HorizontalScrollbar = true;
             this.Controls.Add(listBox);
         }
 

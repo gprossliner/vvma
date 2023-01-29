@@ -25,14 +25,14 @@
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmApp));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.lstMidiLog = new vvma.LogControl();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.lstConnectionLog = new vvma.LogControl();
+            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.panFiles = new System.Windows.Forms.Panel();
+            this.lblLoading = new System.Windows.Forms.Label();
             this.btnStyleActive = new System.Windows.Forms.Button();
             this.btnStyleNotActive = new System.Windows.Forms.Button();
-            this.lblLoading = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tableLayoutPanel1.SuspendLayout();
@@ -44,26 +44,50 @@
             this.groupBox1.Controls.Add(this.lstMidiLog);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox1.Location = new System.Drawing.Point(4, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox1.Size = new System.Drawing.Size(392, 248);
             this.groupBox1.TabIndex = 7;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "MIDI Input";
+            // 
+            // lstMidiLog
+            // 
+            this.lstMidiLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstMidiLog.Location = new System.Drawing.Point(12, 26);
+            this.lstMidiLog.Margin = new System.Windows.Forms.Padding(4);
+            this.lstMidiLog.MaxItems = 50;
+            this.lstMidiLog.Name = "lstMidiLog";
+            this.lstMidiLog.Size = new System.Drawing.Size(372, 216);
+            this.lstMidiLog.TabIndex = 5;
             // 
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.lstConnectionLog);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBox2.Location = new System.Drawing.Point(4, 260);
-            this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Margin = new System.Windows.Forms.Padding(4);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Padding = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.groupBox2.Padding = new System.Windows.Forms.Padding(4);
             this.groupBox2.Size = new System.Drawing.Size(392, 248);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Connection";
+            // 
+            // lstConnectionLog
+            // 
+            this.lstConnectionLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.lstConnectionLog.Location = new System.Drawing.Point(9, 26);
+            this.lstConnectionLog.Margin = new System.Windows.Forms.Padding(4);
+            this.lstConnectionLog.MaxItems = 50;
+            this.lstConnectionLog.Name = "lstConnectionLog";
+            this.lstConnectionLog.Size = new System.Drawing.Size(372, 213);
+            this.lstConnectionLog.TabIndex = 6;
             // 
             // tableLayoutPanel1
             // 
@@ -74,37 +98,13 @@
             this.tableLayoutPanel1.Controls.Add(this.groupBox1, 0, 0);
             this.tableLayoutPanel1.Controls.Add(this.groupBox2, 0, 1);
             this.tableLayoutPanel1.Location = new System.Drawing.Point(580, -1);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 2;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tableLayoutPanel1.Size = new System.Drawing.Size(400, 512);
             this.tableLayoutPanel1.TabIndex = 8;
-            // 
-            // lstMidiLog
-            // 
-            this.lstMidiLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstMidiLog.Location = new System.Drawing.Point(12, 26);
-            this.lstMidiLog.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.lstMidiLog.MaxItems = 50;
-            this.lstMidiLog.Name = "lstMidiLog";
-            this.lstMidiLog.Size = new System.Drawing.Size(372, 216);
-            this.lstMidiLog.TabIndex = 5;
-            // 
-            // lstConnectionLog
-            // 
-            this.lstConnectionLog.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.lstConnectionLog.Location = new System.Drawing.Point(9, 26);
-            this.lstConnectionLog.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
-            this.lstConnectionLog.MaxItems = 50;
-            this.lstConnectionLog.Name = "lstConnectionLog";
-            this.lstConnectionLog.Size = new System.Drawing.Size(372, 213);
-            this.lstConnectionLog.TabIndex = 6;
             // 
             // panFiles
             // 
@@ -120,10 +120,19 @@
             this.panFiles.Size = new System.Drawing.Size(565, 510);
             this.panFiles.TabIndex = 9;
             // 
+            // lblLoading
+            // 
+            this.lblLoading.AutoSize = true;
+            this.lblLoading.Location = new System.Drawing.Point(215, 247);
+            this.lblLoading.Name = "lblLoading";
+            this.lblLoading.Size = new System.Drawing.Size(72, 18);
+            this.lblLoading.TabIndex = 1;
+            this.lblLoading.Text = "Loading...";
+            // 
             // btnStyleActive
             // 
             this.btnStyleActive.AutoEllipsis = true;
-            this.btnStyleActive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(128)))));
+            this.btnStyleActive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.btnStyleActive.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnStyleActive.Location = new System.Drawing.Point(3, 46);
             this.btnStyleActive.Name = "btnStyleActive";
@@ -136,6 +145,7 @@
             // btnStyleNotActive
             // 
             this.btnStyleNotActive.AutoEllipsis = true;
+            this.btnStyleNotActive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStyleNotActive.Location = new System.Drawing.Point(3, 3);
             this.btnStyleNotActive.Name = "btnStyleNotActive";
             this.btnStyleNotActive.Size = new System.Drawing.Size(483, 37);
@@ -143,15 +153,6 @@
             this.btnStyleNotActive.Text = "btnStyleNotActive";
             this.btnStyleNotActive.UseVisualStyleBackColor = true;
             this.btnStyleNotActive.Visible = false;
-            // 
-            // lblLoading
-            // 
-            this.lblLoading.AutoSize = true;
-            this.lblLoading.Location = new System.Drawing.Point(215, 247);
-            this.lblLoading.Name = "lblLoading";
-            this.lblLoading.Size = new System.Drawing.Size(72, 18);
-            this.lblLoading.TabIndex = 1;
-            this.lblLoading.Text = "Loading...";
             // 
             // FrmApp
             // 
@@ -163,7 +164,7 @@
             this.Controls.Add(this.tableLayoutPanel1);
             this.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "FrmApp";
             this.Text = "VVMA";
             this.Load += new System.EventHandler(this.FrmApp_Load);

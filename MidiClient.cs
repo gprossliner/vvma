@@ -61,7 +61,7 @@ namespace vvma {
                     break;
 
                 case MidiEventType.NoteOff: {
-                        var n = (NoteOnEvent)e.Event;
+                        var n = (NoteOffEvent)e.Event;
                         if (n.Channel != channel) {
                             return;
                         }
