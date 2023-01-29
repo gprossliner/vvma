@@ -70,14 +70,13 @@ namespace vvma {
 
         private void cmdOpenClient_Click(object sender, EventArgs e) {
             this.client = new Client(txtAddress.Text, 5233);
-            client.MessageReceived += this.Client_MessageReceived;
-            client.MessageSend += this.Client_MessageSend;
+            this.client.Log += Client_Log;
             client.Start();
             lstClientMessages.AddLogItem("Connection estabished");
         }
 
-        private void Client_MessageSend(object sender, string e) {
-            lstClientMessages.AddLogItem("> " + e);
+        private void Client_Log(object sender, string e) {
+            lstClientMessages.AddLogItem(e);
         }
         private void Client_MessageReceived(object sender, string e) {
             lstClientMessages.AddLogItem("< " + e);
@@ -102,8 +101,5 @@ namespace vvma {
 
         }
 
-        private void button1_Click(object sender, EventArgs e) {
-            new FrmTestServer().Show();
-        }
     }
 }

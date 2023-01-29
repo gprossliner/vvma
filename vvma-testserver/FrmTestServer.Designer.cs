@@ -1,4 +1,4 @@
-﻿namespace vvma {
+﻿namespace vvma_testserver {
     partial class FrmTestServer {
         /// <summary>
         /// Required designer variable.
@@ -45,7 +45,6 @@
             this.Controls.Add(this.lstServerLog);
             this.Name = "FrmTestServer";
             this.Text = "FrmTestServer";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmTestServer_FormClosing);
             this.Load += new System.EventHandler(this.FrmTestServer_Load);
             this.ResumeLayout(false);
 

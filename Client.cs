@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace vvma {
     class Client {
 
-        TcpClient tcpClient;
-        Thread readerThread;
-        NetworkStream stream;
-        bool stop;
+        TcpClient tcpClient = new TcpClient();
+        StreamHandler handler;
+       
         string address;
         int port;
 
-        public bool Connected { get; private set; }
+        public bool Connected => handler != null;
 
         public const string END = "a4a8c2e3";
 
@@ -25,8 +22,10 @@ namespace vvma {
             this.port = port;
         }
 
-        public event EventHandler<string> MessageReceived;
-        public event EventHandler<string> MessageSend;
+        public event EventHandler<string> Log;
+        public event EventHandler<EventArgs> ConnectionEstablished;
+        public event EventHandler<EventArgs> ConnectionClosed;
+
         public event EventHandler<EventArgs> StatusUpdated; 
 
         public int ActiveFile { get; private set; }
@@ -35,57 +34,55 @@ namespace vvma {
 
         public void Start() {
 
-            tcpClient = new TcpClient();
+            OnLog("Try connect to server");
+            tcpClient.BeginConnect(address, port, ar => {
+                try {
+                    tcpClient.EndConnect(ar);
+                } catch(SocketException sex) {
+                    OnLog($"Connection error: {sex.SocketErrorCode}");
+                    Start();
+                    return;
+                }
+                OnLog("Connected to server");
 
-            readerThread = new Thread(readerMain);
-            readerThread.IsBackground = true;
-            readerThread.Start();
+                var stream = tcpClient.GetStream();
+                handler = new StreamHandler(stream);
+
+                handler.MessageReceived += this.Handler_MessageReceived;
+                handler.ConnectionClosed += this.Handler_ConnectionClosed;
+                handler.Start();
+                this.ConnectionEstablished?.Invoke(this, EventArgs.Empty);
+            }, null);
         }
 
-        void readerMain() {
-            while (!stop) {
+        private void Handler_ConnectionClosed(object sender, EventArgs e) {
+            OnLog("Connection closed by server!");
+            handler = null;
+            this.ConnectionClosed?.Invoke(this, EventArgs.Empty);
+            Start();
+        }
 
-                if (!this.Connected) {
-                    try {
-                        tcpClient.Connect(address, port);
-                        tcpClient.ReceiveTimeout = 10;
-                        stream = tcpClient.GetStream();
-                        this.Connected = true;
+        private void Handler_MessageReceived(object sender, string msg) {
 
-                        Thread.Sleep(500);
-                    } catch (Exception ex) {
+            OnLog("< " + msg);
 
-                    }
-                    continue;
-                }
-
-                var data = stream.ReadMessage(ref stop);
-                if (this.MessageReceived != null) {
-                    this.MessageReceived(this, data);
-                }
-
-                if (data.StartsWith("c30c38")) {
-                    this.ParseFileList(data);
-                    if (this.StatusUpdated != null) {
-                        this.StatusUpdated(this, EventArgs.Empty);
-                    }
+            if (msg.StartsWith("c30c38")) {
+                this.ParseFileList(msg);
+                if (this.StatusUpdated != null) {
+                    this.StatusUpdated(this, EventArgs.Empty);
                 }
             }
+        }
+
+        protected void OnLog(string log) {
+            this.Log?.Invoke(this, log);
         }
 
         public void Send(string msg) {
-            var data = Encoding.ASCII.GetBytes(msg);
-            stream.Write(data, 0, data.Length);
-
-            if (this.MessageSend != null) {
-                this.MessageSend(this, msg);
-            }
+            handler.Send(msg);
+            OnLog("> " + msg);
         }
 
-        public void StopListen() {
-            stop = true;
-            readerThread.Join();
-        }
 
         public void PlayFile(int index) {
             var cmd = $"c31c40abe{index.ToString("00")}{END}";

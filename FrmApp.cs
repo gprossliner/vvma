@@ -5,10 +5,10 @@ using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Melanchall.DryWetMidi.Core;
-using Melanchall.DryWetMidi.Multimedia;
+
 
 namespace vvma {
     public partial class FrmApp : Form {
@@ -17,12 +17,18 @@ namespace vvma {
 
         Client Client { get; set; }
 
+        MidiClient MidiClient { get; set; }
+
+        bool midiDirty;
+        bool connectionDirty;
+        bool inMainOp;
+
         public FrmApp() {
             InitializeComponent();
         }
 
         void Log(string text) {
-            lstLog.AddLogItem(text);
+            //lstLog.AddLogItem(text);
         }
 
         void DebugLog(string text) {
@@ -31,27 +37,11 @@ namespace vvma {
 
         private void FrmApp_Load(object sender, EventArgs e) {
 
-            var cfg = Config.Open("config.yaml");
-            this.Config = cfg;
+            this.lstMidiInputs.Items.AddRange(MidiClient.GetPortNames().ToArray());
 
-            Log($"Create Client for {cfg.ServerAddress}:{cfg.ServerPort}");
-
-            this.Client = new Client(cfg.ServerAddress, cfg.ServerPort);
-            this.Client.MessageReceived += this.Client_MessageReceived;
-            this.Client.MessageSend += this.Client_MessageSend;
-            this.Client.StatusUpdated += this.Client_StatusUpdated;
-            this.Client.Start();
-
-            //// Open MIDI Port
-            //Log($"Open MIDI Port '{cfg.MidiInPort}'");
-            //var input = InputDevice.GetByName(cfg.MidiInPort);
-
-            //Log($"Port opened. Listen on Channel {cfg.MidiChannel} for Notest {cfg.StartNote}-{cfg.EndNote}");
-            //input.EventReceived += this.Input_EventReceived;
-            //input.StartEventsListening();
-
-            timer.Interval = 5000;
-            timer.Start();
+            if(this.lstMidiInputs.Items.Count == 0) {
+                this.lstMidiLog.AddLog("No MIDI input port available!");
+            }
 
         }
 
@@ -63,80 +53,144 @@ namespace vvma {
             DebugLog("< " + e);
         }
 
-        void PlayFile(int index) {
-            Log($"PlayFile({index})");
-            this.Client.PlayFile(index);
-        }
-
-        private void Input_EventReceived(object sender, MidiEventReceivedEventArgs e) {
-            switch(e.Event.EventType) {
-                case MidiEventType.NoteOn: {
-                        var n = (NoteOnEvent)e.Event;
-                        if (n.Channel != this.Config.MidiChannel) {
-                            return;
-                        }
-
-                        DebugLog(n.ToString());
-
-                        if (n.NoteNumber >= this.Config.StartNote && n.NoteNumber <= this.Config.EndNote) {
-                            var index = n.NoteNumber - this.Config.StartNote + 2;
-                            PlayFile(index);
-                        }
+        private void timerDebounce_Tick(object sender, EventArgs e) {
+            if (midiDirty) {
+                if (lstMidiInputs.SelectedItem != null) {
+                    var name = lstMidiInputs.SelectedItem.ToString();
+                    if (name != "") {
+                        lstMidiLog.AddLog($"Open MIDI Port '{name}'");
                     }
 
-                    break;
-
-                case MidiEventType.NoteOff: {
-                        var n = (NoteOnEvent)e.Event;
-                        if (n.Channel != this.Config.MidiChannel) {
-                            return;
-                        }
-
-                        DebugLog(n.ToString());
-
-                        if (n.NoteNumber >= this.Config.StartNote && n.NoteNumber <= this.Config.EndNote) {
-                            PlayFile(1);
-                        }
-                    }
-
-                    break;
+                    this.MidiClient = new MidiClient(name, 0, 0, 10);
+                    this.MidiClient.Log += this.MidiClient_Log;
+                    this.MidiClient.PlayFile += this.MidiClient_PlayFile;
+                    this.MidiClient.Start();
+                }
+                midiDirty = false;
             }
+
+            if (connectionDirty) {
+                var address = lstServer.SelectedItem.ToString();
+
+                lstConnectionLog.AddLog($"Create connection to '{address}'");
+                this.Client = new Client(address, 5233);
+                this.Client.Log += this.VClient_Log;
+                this.Client.Start();
+                this.Client.StatusUpdated += this.VClient_StatusUpdated;
+                this.Client.ConnectionEstablished += this.Client_ConnectionEstablished;
+
+                connectionDirty = false;
+                return;
+            }
+
         }
 
-        private void exitToolStripMenuItem_Click(object sender, EventArgs e) {
-
-        }
-
-        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e) {
-
-        }
-
-        FrmTestServer _frmTestServer = new FrmTestServer();
-
-        private void cmdTestServer_Click(object sender, EventArgs e) {
-            _frmTestServer.Show();   
-        }
-
-        private void timer_Tick(object sender, EventArgs e) {
-
-            if (this.Client.Connected) {
-
-                // Get FileList
+        private void Client_ConnectionEstablished(object sender, EventArgs e) {
+            if (!inMainOp) {
                 this.Client.UpdateStatus();
-
-                // Play empty
-                PlayFile(1);
             }
         }
 
-        private void Client_StatusUpdated(object sender, EventArgs e) {
+        private void MidiClient_PlayFile(object sender, int e) {
+            PlayFile(e);
+        }
+
+        private void PlayFile(int e) {
+            if (this.Client.Connected) {
+                this.Client.PlayFile(e);
+                this.Client.UpdateStatus();
+            }
+        }
+
+        private void MidiClient_Log(object sender, string e) {
+            lstMidiLog.AddLog(e);
+        }
+
+        private void VClient_StatusUpdated(object sender, EventArgs e) {
+            this.Invoke(((Action)(() => {
+                lstConnectionLog.AddLog("GOT STATUS UPDATE!");
+
+                if (!inMainOp) {
+                    BuildFileList();
+                    inMainOp = true;
+                } else {
+                    foreach(var btn in buttons) {
+                        if ((int)btn.Tag == this.Client.ActiveFile) {
+                            ButtonStyleActive(btn);
+                        } else {
+                            ButtonStyleNotActive(btn);
+                        }
+                    }
+                }
+
+            })));
+        }
+
+        Button[] buttons;
+
+        void BuildFileList() {
+            var files = this.Client.Files.ToArray();
+
+            var pad = 2;
+            var height = 27;
+
+            var buttons = new List<Button>();
+
+            for(var i=0; i<files.Length; i++) {
+                var btn = new Button();
+                btn.Top = (pad + height) * i + pad;
+                btn.Height = height;
+                btn.Width = panFiles.Width;
+                btn.Text = files[i];
+                btn.TextAlign = ContentAlignment.MiddleLeft;
+                btn.Tag = i + 1;
+                btn.Click += this.BtnFile_Click;
+
+                if (i+1 == Client.ActiveFile) {
+                    ButtonStyleActive(btn);
+                } else {
+                    ButtonStyleNotActive(btn);
+                }
+
+                panFiles.Controls.Add(btn);
+                buttons.Add(btn);
+            }
+
+            this.buttons = buttons.ToArray();
+        }
+
+        private void BtnFile_Click(object sender, EventArgs e) {
+            var btn = (Button)sender;
+            var index = (int)(btn.Tag);
+
+            PlayFile(index);
+        }
+
+        void ButtonStyleNotActive(Button btn) {
+            btn.BackColor = btnStyleNotActive.BackColor;
+            btn.Font = btnStyleNotActive.Font;
+        }
+
+        void ButtonStyleActive(Button btn) {
+            btn.BackColor = btnStyleActive.BackColor;
+            btn.Font = btnStyleActive.Font;
+        }
+
+        private void VClient_Log(object sender, string e) {
 
             this.Invoke(((Action)(() => {
-                lstFiles.Items.Clear();
-                lstFiles.Items.AddRange(this.Client.Files.ToArray());
-                lstFiles.SelectedIndex = this.Client.ActiveFile - 1;
+                lstConnectionLog.AddLog(e);
             })));
 
+        }
+        
+
+        private void SetMidiDirty(object sender, EventArgs e) {
+            midiDirty = true;
+        }
+
+        private void SetConnectionDirty(object sender, EventArgs e) {
+            connectionDirty = true;
         }
     }
 }
