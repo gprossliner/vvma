@@ -36,10 +36,20 @@ namespace vvma {
             }
 
             this.inputDevice.EventReceived += this.InputDevice_EventReceived;
+            this.inputDevice.ErrorOccurred += this.InputDevice_ErrorOccurred;
+            this.inputDevice.MidiTimeCodeReceived += this.InputDevice_MidiTimeCodeReceived;
             inputDevice.StartEventsListening();
             OnLog($"MIDI Port '{this.portName}' opened");
 
             return true;
+        }
+
+        private void InputDevice_MidiTimeCodeReceived(object sender, MidiTimeCodeReceivedEventArgs e) {
+            OnLog($"MIDI TC {e.Format}: {e.Hours.ToString("00")}:{e.Minutes.ToString("00")}:{e.Seconds.ToString("00")}");
+        }
+
+        private void InputDevice_ErrorOccurred(object sender, ErrorOccurredEventArgs e) {
+            OnLog($"MIDI Error: {e.Exception.Message}");
         }
 
         bool IsInRange(int noteNumber) {

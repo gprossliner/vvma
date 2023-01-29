@@ -8,7 +8,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using Melanchall.DryWetMidi.Common;
+using Melanchall.DryWetMidi.MusicTheory;
 
 namespace vvma {
     public partial class FrmApp : Form {
@@ -138,12 +139,15 @@ namespace vvma {
                 btn.Height = height;
                 btn.Width = panFiles.Width;
                 btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
-                btn.Text = files[i];
+
+                var nn = (SevenBitNumber)(i + Config.StartNote);
+
+                btn.Text = $"{files[i]}   {Note.Get(nn)} ({nn})";
                 btn.TextAlign = ContentAlignment.MiddleLeft;
                 btn.FlatStyle = btnStyleNotActive.FlatStyle;
                 btn.Tag = i + 1;
                 btn.Click += this.BtnFile_Click;
-
+                
                 if (i+1 == Client.ActiveFile) {
                     ButtonStyleActive(btn);
                 } else {
