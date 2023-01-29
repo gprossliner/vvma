@@ -26,11 +26,20 @@ namespace vvma {
             this.endNote = endNote;
         }
 
-        public void Start() {
-            this.inputDevice = InputDevice.GetByName(this.portName);
+        public bool Start() {
+            try {
+                this.inputDevice = InputDevice.GetByName(this.portName);
+            } catch (ArgumentException) {
+                var devices = string.Join(",", InputDevice.GetAll().Select(d => $"'{d.Name}'"));
+                OnLog($"MIDI Input '{this.portName}' not found! Available Devices: {devices}");
+                return false;
+            }
+
             this.inputDevice.EventReceived += this.InputDevice_EventReceived;
             inputDevice.StartEventsListening();
             OnLog($"MIDI Port '{this.portName}' opened");
+
+            return true;
         }
 
         private void InputDevice_EventReceived(object sender, MidiEventReceivedEventArgs e) {

@@ -19,8 +19,8 @@ namespace vvma {
 
         MidiClient MidiClient { get; set; }
 
-        bool midiDirty;
-        bool connectionDirty;
+        Button[] buttons;
+
         bool inMainOp;
 
         public FrmApp() {
@@ -37,12 +37,28 @@ namespace vvma {
 
         private void FrmApp_Load(object sender, EventArgs e) {
 
-            this.lstMidiInputs.Items.AddRange(MidiClient.GetPortNames().ToArray());
+            this.Config = Config.Load("config.yaml");
 
-            if(this.lstMidiInputs.Items.Count == 0) {
-                this.lstMidiLog.AddLog("No MIDI input port available!");
-            }
+            InitClient();
+            InitMidi();
+        }
 
+        void InitClient() {
+            lstConnectionLog.AddLog($"Create connection to '{Config.Server}:{Config.ServerPort}'");
+            this.Client = new Client(Config.Server, Config.ServerPort);
+            this.Client.Log += this.VClient_Log;
+            this.Client.Start();
+            this.Client.StatusUpdated += this.VClient_StatusUpdated;
+            this.Client.ConnectionEstablished += this.Client_ConnectionEstablished;
+        }
+
+        void InitMidi() {
+            lstMidiLog.AddLog($"Open MIDI Port '{Config.MidiInPort}'");
+
+            this.MidiClient = new MidiClient(Config.MidiInPort, 0, 0, 10);
+            this.MidiClient.Log += this.MidiClient_Log;
+            this.MidiClient.PlayFile += this.MidiClient_PlayFile;
+            this.MidiClient.Start();
         }
 
         private void Client_MessageSend(object sender, string e) {
@@ -51,38 +67,6 @@ namespace vvma {
 
         private void Client_MessageReceived(object sender, string e) {
             DebugLog("< " + e);
-        }
-
-        private void timerDebounce_Tick(object sender, EventArgs e) {
-            if (midiDirty) {
-                if (lstMidiInputs.SelectedItem != null) {
-                    var name = lstMidiInputs.SelectedItem.ToString();
-                    if (name != "") {
-                        lstMidiLog.AddLog($"Open MIDI Port '{name}'");
-                    }
-
-                    this.MidiClient = new MidiClient(name, 0, 0, 10);
-                    this.MidiClient.Log += this.MidiClient_Log;
-                    this.MidiClient.PlayFile += this.MidiClient_PlayFile;
-                    this.MidiClient.Start();
-                }
-                midiDirty = false;
-            }
-
-            if (connectionDirty) {
-                var address = lstServer.SelectedItem.ToString();
-
-                lstConnectionLog.AddLog($"Create connection to '{address}'");
-                this.Client = new Client(address, 5233);
-                this.Client.Log += this.VClient_Log;
-                this.Client.Start();
-                this.Client.StatusUpdated += this.VClient_StatusUpdated;
-                this.Client.ConnectionEstablished += this.Client_ConnectionEstablished;
-
-                connectionDirty = false;
-                return;
-            }
-
         }
 
         private void Client_ConnectionEstablished(object sender, EventArgs e) {
@@ -108,7 +92,6 @@ namespace vvma {
 
         private void VClient_StatusUpdated(object sender, EventArgs e) {
             this.Invoke(((Action)(() => {
-                lstConnectionLog.AddLog("GOT STATUS UPDATE!");
 
                 if (!inMainOp) {
                     BuildFileList();
@@ -126,8 +109,6 @@ namespace vvma {
             })));
         }
 
-        Button[] buttons;
-
         void BuildFileList() {
             var files = this.Client.Files.ToArray();
 
@@ -141,6 +122,7 @@ namespace vvma {
                 btn.Top = (pad + height) * i + pad;
                 btn.Height = height;
                 btn.Width = panFiles.Width;
+                btn.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
                 btn.Text = files[i];
                 btn.TextAlign = ContentAlignment.MiddleLeft;
                 btn.Tag = i + 1;
@@ -184,13 +166,5 @@ namespace vvma {
 
         }
         
-
-        private void SetMidiDirty(object sender, EventArgs e) {
-            midiDirty = true;
-        }
-
-        private void SetConnectionDirty(object sender, EventArgs e) {
-            connectionDirty = true;
-        }
     }
 }

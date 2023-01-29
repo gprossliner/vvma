@@ -20,11 +20,11 @@ namespace vvma {
 
         public int MidiChannel { get; set; }
 
-        public string ServerAddress { get; set; } = "127.0.0.1";
+        public string Server { get; set; } = "127.0.0.1";
 
         public int ServerPort { get; set; } = 5233;
 
-        public static Config Open(string file) {    
+        public static Config Load(string file) {    
             var content = File.ReadAllText(file);
             var deserializer = new DeserializerBuilder()
                 .WithNamingConvention(PascalCaseNamingConvention.Instance)

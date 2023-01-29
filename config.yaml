@@ -2,6 +2,7 @@
 MidiInChannel: 2
 StartNote: 0 #C4
 EndNote: 10 # 7 videos	
+Server: 127.0.0.1
 
 TestCommands:
 - Name: PlayNr1

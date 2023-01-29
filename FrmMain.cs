@@ -36,7 +36,7 @@ namespace vvma {
 
             lstInputs.SelectedIndex = 0;
 
-            this.Config = Config.Open("config.yaml");
+            this.Config = Config.Load("config.yaml");
             lstTestMessages.Items.AddRange(this.Config.TestCommands.ToArray());
         }
 
