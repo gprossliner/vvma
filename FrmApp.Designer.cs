@@ -132,7 +132,7 @@
             // btnStyleActive
             // 
             this.btnStyleActive.AutoEllipsis = true;
-            this.btnStyleActive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
+            this.btnStyleActive.BackColor = System.Drawing.Color.Lime;
             this.btnStyleActive.Font = new System.Drawing.Font("Tahoma", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnStyleActive.Location = new System.Drawing.Point(3, 46);
             this.btnStyleActive.Name = "btnStyleActive";
@@ -145,13 +145,14 @@
             // btnStyleNotActive
             // 
             this.btnStyleNotActive.AutoEllipsis = true;
+            this.btnStyleNotActive.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.btnStyleNotActive.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnStyleNotActive.Location = new System.Drawing.Point(3, 3);
             this.btnStyleNotActive.Name = "btnStyleNotActive";
             this.btnStyleNotActive.Size = new System.Drawing.Size(483, 37);
             this.btnStyleNotActive.TabIndex = 0;
             this.btnStyleNotActive.Text = "btnStyleNotActive";
-            this.btnStyleNotActive.UseVisualStyleBackColor = true;
+            this.btnStyleNotActive.UseVisualStyleBackColor = false;
             this.btnStyleNotActive.Visible = false;
             // 
             // FrmApp

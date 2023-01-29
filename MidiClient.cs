@@ -12,18 +12,18 @@ namespace vvma {
         string portName;
         int channel;
         int startNote;
-        int endNote;
 
         InputDevice inputDevice;
 
         public event EventHandler<string> Log;
         public event EventHandler<int> PlayFile;    
 
-        public MidiClient(string portName, int channel, int startNote, int endNote) {
+        public int FilesCount { get; set; }
+
+        public MidiClient(string portName, int channel, int startNote) {
             this.portName = portName;
             this.channel = channel;
             this.startNote = startNote;
-            this.endNote = endNote;
         }
 
         public bool Start() {
@@ -42,6 +42,10 @@ namespace vvma {
             return true;
         }
 
+        bool IsInRange(int noteNumber) {
+            return noteNumber >= startNote && noteNumber < startNote + FilesCount - 1;
+        }
+
         private void InputDevice_EventReceived(object sender, MidiEventReceivedEventArgs e) {
             switch (e.Event.EventType) {
                 case MidiEventType.NoteOn: {
@@ -52,7 +56,7 @@ namespace vvma {
 
                         OnLog(n.ToString());
 
-                        if (n.NoteNumber >= startNote && n.NoteNumber <= endNote) {
+                        if (IsInRange(n.NoteNumber)) {
                             var index = n.NoteNumber - startNote + 2;
                             OnPlayFile(index);
                         }
@@ -68,7 +72,7 @@ namespace vvma {
 
                         OnLog(n.ToString());
 
-                        if (n.NoteNumber >= startNote && n.NoteNumber <= endNote) {
+                        if (IsInRange(n.NoteNumber)) {
                             OnPlayFile(1);
                         }
                     }

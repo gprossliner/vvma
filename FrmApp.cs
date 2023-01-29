@@ -57,7 +57,7 @@ namespace vvma {
         void InitMidi() {
             lstMidiLog.AddLog($"Open MIDI Port '{Config.MidiInPort}'");
 
-            this.MidiClient = new MidiClient(Config.MidiInPort, Config.MidiChannel, Config.StartNote, Config.EndNote);
+            this.MidiClient = new MidiClient(Config.MidiInPort, Config.MidiChannel, Config.StartNote);
             this.MidiClient.Log += this.MidiClient_Log;
             this.MidiClient.PlayFile += this.MidiClient_PlayFile;
             this.MidiClient.Start();
@@ -94,7 +94,7 @@ namespace vvma {
         }
 
         private void PlayFile(int index) {
-            if (this.Client.Connected && index <= this.Client.Files.Count()) {
+            if (this.Client.Connected) {
                 this.Client.PlayFile(index);
                 this.Client.UpdateStatus();
             }
@@ -108,6 +108,7 @@ namespace vvma {
             this.Invoke(() => {
 
                 if (!filesLoaded) {
+                    this.MidiClient.FilesCount = this.Client.Files.Count();
                     BuildFileList();
                     filesLoaded = true;
                 } else {

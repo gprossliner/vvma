@@ -89,8 +89,10 @@ namespace vvma {
         }
 
         public void PlayFile(int index) {
-            var cmd = $"c31c40abe{index.ToString("00")}{END}";
-            Send(cmd);
+            if (index <= this.Files.Count()) {
+                var cmd = $"c31c40abe{index.ToString("00")}{END}";
+                Send(cmd);
+            }
         }
 
         public void UpdateStatus() {
