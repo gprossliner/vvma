@@ -21,7 +21,7 @@ namespace vvma {
 
         Button[] buttons;
 
-        bool inMainOp;
+        bool filesLoaded;
 
         public FrmApp() {
             InitializeComponent();
@@ -49,9 +49,11 @@ namespace vvma {
             this.Client.Log += this.VClient_Log;
             this.Client.Start();
             this.Client.StatusUpdated += this.VClient_StatusUpdated;
+            this.Client.ConnectionClosed += this.Client_ConnectionClosed;
             this.Client.ConnectionEstablished += this.Client_ConnectionEstablished;
         }
 
+        
         void InitMidi() {
             lstMidiLog.AddLog($"Open MIDI Port '{Config.MidiInPort}'");
 
@@ -70,10 +72,21 @@ namespace vvma {
         }
 
         private void Client_ConnectionEstablished(object sender, EventArgs e) {
-            if (!inMainOp) {
-                this.Client.UpdateStatus();
-            }
+            this.Client.UpdateStatus();
         }
+
+        private void Client_ConnectionClosed(object sender, EventArgs e) {
+            this.Invoke(((Action)(() => {
+                foreach(var btn in buttons) {
+                    panFiles.Controls.Remove(btn);
+                    btn.Click -= BtnFile_Click;
+                }
+
+                lblLoading.Visible = true;
+                filesLoaded = false;
+            })));
+        }
+
 
         private void MidiClient_PlayFile(object sender, int e) {
             PlayFile(e);
@@ -93,9 +106,9 @@ namespace vvma {
         private void VClient_StatusUpdated(object sender, EventArgs e) {
             this.Invoke(((Action)(() => {
 
-                if (!inMainOp) {
+                if (!filesLoaded) {
                     BuildFileList();
-                    inMainOp = true;
+                    filesLoaded = true;
                 } else {
                     foreach(var btn in buttons) {
                         if ((int)btn.Tag == this.Client.ActiveFile) {
@@ -113,7 +126,7 @@ namespace vvma {
             var files = this.Client.Files.ToArray();
 
             var pad = 2;
-            var height = 27;
+            var height = btnStyleNotActive.Height;
 
             var buttons = new List<Button>();
 
@@ -139,6 +152,7 @@ namespace vvma {
             }
 
             this.buttons = buttons.ToArray();
+            lblLoading.Visible = false;
         }
 
         private void BtnFile_Click(object sender, EventArgs e) {
