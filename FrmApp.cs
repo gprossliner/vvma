@@ -56,7 +56,7 @@ namespace vvma {
 
         
         void InitMidi() {
-            lstMidiLog.AddLog($"Open MIDI Port '{Config.MidiInPort}'");
+            lstMidiLog.AddLog($"Open MIDI Port '{Config.MidiInPort}' Channel {this.Config.MidiChannel}");
 
             this.MidiClient = new MidiClient(Config.MidiInPort, Config.MidiChannel, Config.StartNote);
             this.MidiClient.Log += this.MidiClient_Log;
@@ -74,19 +74,22 @@ namespace vvma {
 
         private void Client_ConnectionEstablished(object sender, EventArgs e) {
             this.Client.ModeLoop();
+            //Thread.Sleep(100);
             this.Client.UpdateStatus();
         }
 
         private void Client_ConnectionClosed(object sender, EventArgs e) {
-            this.Invoke(() => {
-                foreach(var btn in buttons) {
-                    panFiles.Controls.Remove(btn);
-                    btn.Click -= BtnFile_Click;
-                }
+            if (buttons != null) {
+                this.Invoke(() => {
+                    foreach (var btn in buttons) {
+                        panFiles.Controls.Remove(btn);
+                        btn.Click -= BtnFile_Click;
+                    }
 
-                lblLoading.Visible = true;
-                filesLoaded = false;
-            });
+                    lblLoading.Visible = true;
+                    filesLoaded = false;
+                });
+            }
         }
 
 
@@ -142,7 +145,7 @@ namespace vvma {
 
                 var nn = (SevenBitNumber)(i + Config.StartNote);
 
-                btn.Text = $"{files[i]}   {Note.Get(nn)} ({nn})";
+                btn.Text = $"{files[i]} ({nn} {Note.Get(nn)})";
                 btn.TextAlign = ContentAlignment.MiddleLeft;
                 btn.FlatStyle = btnStyleNotActive.FlatStyle;
                 btn.Tag = i + 1;

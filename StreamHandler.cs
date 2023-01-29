@@ -11,7 +11,6 @@ namespace vvma {
 
         NetworkStream stream;
         byte[] buffer = new byte[1024];
-        int bufferPos = 0;
         const string END = "a4a8c2e3";
 
         public event EventHandler<string> MessageReceived;
@@ -30,7 +29,7 @@ namespace vvma {
         }
 
         void BeginRead() {
-            stream.BeginRead(buffer, bufferPos, buffer.Length-bufferPos, ar => {
+            stream.BeginRead(buffer, 0, buffer.Length, ar => {
                 var r = 0;
                 try {
                     r = stream.EndRead(ar);
@@ -38,19 +37,25 @@ namespace vvma {
                     if (ioex.HResult == -2146232800) {
                         // connnection closed
                         this.ConnectionClosed?.Invoke(this, EventArgs.Empty);
+                        return;
                     }
                 }
-                bufferPos += r;
 
-                // check for END
-                var sbuffer = Encoding.ASCII.GetString(buffer, 0, bufferPos);
-                var p = sbuffer.IndexOf(END);
-                if (p > 0) {
-                    var msg = sbuffer.Substring(0, p + END.Length);
-                    bufferPos = p + END.Length - msg.Length;
-                    OnMessageReceived(msg);
-                    BeginRead();
+                var sbuffer = Encoding.ASCII.GetString(buffer, 0, r);
+
+                // check for messages
+                while(sbuffer.Length > 0) {
+                    var p = sbuffer.IndexOf(END);
+                    if (p > 0) {
+                        var msg = sbuffer.Substring(0, p + END.Length);
+                        OnMessageReceived(msg);
+                        sbuffer = sbuffer.Substring(p + END.Length);
+                    } else
+                        break;
                 }
+
+                BeginRead();
+
             }, null);
         }
 
