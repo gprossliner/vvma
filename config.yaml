@@ -1,7 +1,7 @@
 ﻿MidiInPort: CASIO USB-MIDI
 MidiInChannel: 0
 StartNote: 24
-Server: 127.0.0.1
+Server: 127.0.0.1 # 192.168.4.1
 
 TestCommands:
 - Name: PlayNr1

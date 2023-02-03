@@ -82,6 +82,7 @@ namespace vvma {
         public void Send(string msg) {
             handler.Send(msg);
             OnLog("> " + msg);
+            System.Threading.Thread.Sleep(100); // wait a little so that the server can handle the request
         }
 
         public void ModeLoop() {
